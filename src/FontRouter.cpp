@@ -33,7 +33,7 @@
 _LIT(KFontRouterVer,			"Starting FontRouter LT 2.08 Build 20071109...");
 const TUint16 KMetricsProbeCharacters[] =
 {
-	0x7ABF,		// Chinese charecter "Áþ"
+	0x7ABF,		// Chinese charecter "ï¿½ï¿½"
 	'A',
 	'g'
 };
@@ -1834,15 +1834,15 @@ void RSettings::LoadSettingsL(RFs& aFs, const TDesC& aDirPath, const TDesC& aFil
 		TPtrC name = iFontNamePool[i];
 		RDebug::Print(_L("  %S"), & name);
 	}
-	RDebug::Print(_L("\nFontMap:"));
+*/
+	__dbgprint(level_info, "FontMap:");
 	for (TInt i=0; i<iFontMap.Count(); i++)
 	{
 		TFontMapEntry & entry = iFontMap[i];
-		RDebug::Print(_L("  %S@%d:%d=%S@%d:%d+%d"), & entry.iDesiredFontName,
+		__dbgprint(level_info, "  %S@%d:%d=%S@%d:%d", & entry.iDesiredFontName,
 			entry.iDesiredFontHeight, entry.iDesiredFontAttr, & entry.iRoutedFontName,
-			entry.iRoutedFontHeight, entry.iRoutedFontAttr, entry.iRoutedFontAttrDetail.iHorizBearingYAdjust);
+			entry.iRoutedFontHeight, entry.iRoutedFontAttr);
 	}
-*/
 }
 
 
@@ -2114,6 +2114,7 @@ void RSettings::ParseFontString(const TDesC& aFontString, TPtrC& aFontName, TInt
 	TInt& aFontAttr, RSettings::TRoutedFontAtt* aRoutedFontAttDetail)
 {
 	// Example: LatinBold12@12:Y1ai
+	aFontAttr = 0;
 
 	// Parse desired font name, height and attributes.
 	TInt posAt = aFontString.Locate('@');
@@ -2218,7 +2219,14 @@ TInt RSettings::QueryFontMap(const TOpenFontSpec& aDesiredFontSpec,
 	// TODO: Support font attrib on desired font.
 	TBuf<200> debugBuf;
 	TPtrC fontName(aDesiredFontSpec.Name());
-	debugBuf.Format(_L("REQ [%S @ %d T%d]"), & fontName, aDesiredFontSpec.Height(),
+	TBuf<4> styleText;
+	if (aDesiredFontSpec.IsSymbol()) styleText.Append('#');
+	if (aDesiredFontSpec.IsBold()) styleText.Append('B');
+	if (aDesiredFontSpec.IsItalic()) styleText.Append('I');
+	if (aDesiredFontSpec.IsSerif()) styleText.Append('S');
+	if (aDesiredFontSpec.IsMonoWidth()) styleText.Append('M');
+	
+	debugBuf.Format(_L("REQ [%S S<%S> @ %d T%d]"), & fontName, & styleText, aDesiredFontSpec.Height(),
 		aDesiredFontSpec.BitmapType());
 
 	TInt result = KErrNotFound;
@@ -2236,19 +2244,35 @@ TInt RSettings::QueryFontMap(const TOpenFontSpec& aDesiredFontSpec,
 		TFontMapEntry fontMapEntry;
 		fontMapEntry.iDesiredFontName.Set(iFontNamePool[index]);
 		fontMapEntry.iDesiredFontHeight = aDesiredFontSpec.Height();
-		fontMapEntry.iDesiredFontAttr = EFontAttAll;
+		TInt fontAttr = 0;
+		if (aDesiredFontSpec.IsBold() || (aDesiredFontSpec.Effects() & TOpenFontSpec::EAlgorithmicBold) != 0) {
+			fontAttr |= EFontAttBoldAlways;
+		}
+		//if (aDesiredFontSpec.IsItalic()) {
+		//	fontAttr |= EFontAttItalic;
+		//}
+		fontMapEntry.iDesiredFontAttr = fontAttr;
 
 		// TODO: Implement desired font attributes.
+		// Key: All desired font info.
 		TKeyArrayFix key((TUint8*) &fontMapEntry.iDesiredFontName - (TUint8*) &fontMapEntry,
 			ECmpNormal8,
-			(TUint8*) &fontMapEntry.iDesiredFontAttr - (TUint8*) &fontMapEntry.iDesiredFontName);
-								// ~~~~~~~~~~ iDesiredFontAttr is ignored in font-map match.
+			(TUint8*) &fontMapEntry.iRoutedFontName - (TUint8*) &fontMapEntry.iDesiredFontName);
 
 		if (0 != iFontMap.FindIsq(fontMapEntry, key, index))
 		{	// Font with given height cannot be found, search again without height specified.
+
 			fontMapEntry.iDesiredFontHeight = KErrNotFound;
-			if (0 != iFontMap.FindIsq(fontMapEntry, key, index))
-				break;
+			if (0 != iFontMap.FindIsq(fontMapEntry, key, index)) {
+				__dbgprint(level_info, "desired attr not found %d", fontMapEntry.iDesiredFontAttr);
+				fontMapEntry.iDesiredFontAttr = 0;
+				key = TKeyArrayFix((TUint8*) &fontMapEntry.iDesiredFontName - (TUint8*) &fontMapEntry,
+					ECmpNormal8,
+					(TUint8*) &fontMapEntry.iDesiredFontAttr - (TUint8*) &fontMapEntry.iDesiredFontName);
+							// ~~~~~~~~~~ iDesiredFontAttr is ignored in font-map match.
+				if (0 != iFontMap.FindIsq(fontMapEntry, key, index))
+					break;
+			}
 		}
 
 		aFontMapEntry = & iFontMap[index];

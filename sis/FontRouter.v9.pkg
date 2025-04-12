@@ -4,7 +4,7 @@
 
 &EN,ZH
 
-#{"FontRouter LT", "FontRouter LT"}, (0x20009F35), 2, 8, 20071109, TYPE=SA
+#{"FontRouter LT", "FontRouter LT"}, (0x20009F35), 2, 9, 0, TYPE=SA
 
 %{"fontrouter.oasisfeng.com", "fontrouter.oasisfeng.com"}
 :"fontrouter.oasisfeng.com"
@@ -12,12 +12,12 @@
 
 {"FontRouter.txt" "FontRouter_CN.txt"}                 - "", FT, TC
 
-"\Epoc32\release\GCCE\UREL\FontRouter.dll"             - "!:\sys\bin\FontRouter.dll"
-"\Epoc32\Data\z\resource\plugins\FontRouter.rsc"       - "!:\resource\plugins\FontRouter.rsc"
+"$(EPOCROOT)\Epoc32\release\GCCE\UREL\FontRouter.dll"             - "!:\sys\bin\FontRouter.dll"
+"$(EPOCROOT)\Epoc32\Data\z\resource\plugins\FontRouter.rsc"       - "!:\resource\plugins\FontRouter.rsc"
 {"FontRouter.txt" "FontRouter_CN.txt"}                 - "C:\resource\fonts\$FontRouter.txt"
 {"FontRouter.txt" "FontRouter_CN.txt"}                 - "C:\resource\fonts\$FontRouterDummy1.txt"
 {"FontRouter.txt" "FontRouter_CN.txt"}                 - "C:\resource\fonts\$FontRouterDummy2.txt"
 {"FontRouter.txt" "FontRouter_CN.txt"}                 - "C:\resource\fonts\$FontRouterDummy3.txt"
 {"FontRouter.txt" "FontRouter_CN.txt"}                 - "C:\resource\fonts\$FontRouterDummy4.txt"
 {"FontRouter.txt" "FontRouter_CN.txt"}                 - "C:\resource\fonts\$FontRouterDummy5.txt"
-{"INI\FontRouter.v9.ini" "INI\FontRouter.v9.CN.ini"}   - "!:\Data\Fonts\FontRouter.ini"
+;{"INI\FontRouter.v9.ini" "INI\FontRouter.v9.CN.ini"}   - "!:\Data\Fonts\FontRouter.ini"
