@@ -18,7 +18,7 @@
 TARGET FontRouter.dll
 TARGETTYPE PLUGIN
 UID  0x10009D8D 0x20009F34		// UID3 is obtained from Symbian 
-CAPABILITY Protserv
+CAPABILITY All -Tcb
 MACRO __SYMBIAN_9__
 
 SOURCEPATH ..\src
@@ -27,7 +27,7 @@ SOURCE CSettings.cpp
 SOURCE DebugHelper.cpp
 
 USERINCLUDE ..\inc
-SYSTEMINCLUDE . \epoc32\include \epoc32\include\ecom
+SYSTEMINCLUDE . \epoc32\include \epoc32\include\ecom \epoc32\include\platform \epoc32\include\platform\graphics
 
 START RESOURCE ..\group\FontRouter.rss
 TARGET FontRouter.rsc

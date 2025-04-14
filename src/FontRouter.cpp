@@ -821,6 +821,13 @@ CRouterFontRasterizer::CRouterFontRasterizer()
 	}
 
 	iSharedHeap = iFontStore->iHeap;
+	// Check whether FontRouter is the first rasterizer.
+	TInt count = iFontStore->iOpenFontRasterizerList.Count();
+	if (count > 0 && (iFontStore->iOpenFontRasterizerList[0] != this))
+	{
+		dbgprint(level_debug, "FontRouter is not loaded as the first rasterizer, adding");
+		iFontStore->iOpenFontRasterizerList.InsertL(0, this);
+	}
 }
 
 
@@ -838,6 +845,7 @@ COpenFontRasterizer * CRouterFontRasterizer::NewL()
     CRouterFontRasterizer * rasterizer = new(ELeave) CRouterFontRasterizer;
     CleanupStack::PushL(rasterizer);
     rasterizer->iContext = new(ELeave) CRouterFontRasterizerContext;
+  
     CleanupStack::Pop(rasterizer);
     return rasterizer;
 }

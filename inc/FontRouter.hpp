@@ -25,6 +25,9 @@
 #pragma warning(disable: 4100)
 #include <e32uid.h>
 #include <openfont.h>
+#include <openfontconstants.h>
+#include <openfontrasterizer.h>
+#include <openfontlinkedtypefaceextension.h>
 #include <fntstore.h>
 #include <flogger.h>
 #include <e32std.h>
@@ -638,16 +641,16 @@ public:
 };
 
 
-class TDiacritic
-{
-public:
-	TDiacritic * iNext;
-	TPtrC iContext;
-	TInt iPos;
-	TPoint iOffset;
-	TOpenFontAttachment iFromAttachment;
-	TOpenFontAttachment iToAttachment;
-};
+//class TDiacritic
+//{
+//public:
+//	TDiacritic * iNext;
+//	TPtrC iContext;
+//	TInt iPos;
+//	TPoint iOffset;
+//	TOpenFontAttachment iFromAttachment;
+//	TOpenFontAttachment iToAttachment;
+//};
 
 
 class COpenFontGlyph
